@@ -55,11 +55,22 @@ def store_task(task_text: str):
     tasks = read_tasks()
     updated_tasks = create_task(tasks, task_text)
     write_tasks(updated_tasks)
+    print('task stored')
 
 def delete_task(task_id: int):
     tasks = read_tasks()
-    #search for task with equal id
-    #
+    for task in tasks:
+        if task['id'] == task_id:
+            tasks.remove(task)
+            write_tasks(tasks)
+            print('task deleted')
+            return
+    print('no matching id')
+
+def show_tasks():
+    tasks = read_tasks()
+    for task in tasks:
+         print(f"({task['id']}) {task['task']}")
 
 def parse_arguments():
     parser = argparse.ArgumentParser(prog='Todo List', description='CLI Todo List')
@@ -73,6 +84,9 @@ def parse_arguments():
     delete_task_parser = subparsers.add_parser('delete', help='delete task')
     delete_task_parser.add_argument('task_id', type=int, help='task id')
 
+    #list
+    list_task_parser = subparsers.add_parser('list', help='list tasks')
+
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -81,5 +95,8 @@ if __name__ == '__main__':
     if args.command == 'add':
         store_task(args.task)
     if args.command == 'delete':
-        print(args.task_id) #delete_task(args.task_id)
+        delete_task(args.task_id)
+    if args.command == 'list':
+        show_tasks()
+    
 
