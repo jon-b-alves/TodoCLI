@@ -18,12 +18,16 @@ completed_task.json
 
 TODO_FILE = 'data/todo.json'
 
-def load_tasks() -> list:  
+def read_tasks() -> list:  
     with open(TODO_FILE, 'r') as file:
         tasks = json.load(file)
-        return tasks
+  
+        try:
+            return tasks
+        except json.JSONDecodeError:
+            return []
 
-def save_tasks(tasks: list) -> list:
+def write_tasks(tasks: list) -> list:
     with open(TODO_FILE, 'w') as file:
         json.dump(tasks, file, indent=4)
 
@@ -38,19 +42,22 @@ def generate_id(tasks: list) -> int:
     return max_id + 1
         
 
-def add_task(task_text: str):
-    tasks = load_tasks()
+def create_task(tasks: list, task_text: str) -> list:
     task_data = {
         'id': generate_id(tasks),
         'task': task_text,
         'completed': False
     }
-    
     tasks.append(task_data)
-    save_tasks(tasks)
+    return tasks
+
+def store_task(task_text: str):
+    tasks = read_tasks()
+    updated_tasks = create_task(tasks, task_text)
+    write_tasks(updated_tasks)
 
 def delete_task(task_id: int):
-    tasks = load_tasks()
+    tasks = read_tasks()
     #search for task with equal id
     #
 
@@ -72,7 +79,7 @@ if __name__ == '__main__':
     args = parse_arguments()
 
     if args.command == 'add':
-        add_task(args.task)
+        store_task(args.task)
     if args.command == 'delete':
         print(args.task_id) #delete_task(args.task_id)
 
