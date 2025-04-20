@@ -16,7 +16,6 @@ completed_task.json
 
 # read/load -> modify -> write/save
 
-TODO_FILE = 'data/todo.json'
 
 def read_tasks(todo_file) -> list:  
     with open(todo_file, 'r') as file:
@@ -42,7 +41,7 @@ def generate_id(tasks: list) -> int:
     return max_id + 1
         
 
-def create_task(tasks: list, task_text: str) -> list[dict]:
+def create_task(tasks: list, task_text: str) -> list:
     task_data = {
         'id': generate_id(tasks),
         'task': task_text,
@@ -51,24 +50,26 @@ def create_task(tasks: list, task_text: str) -> list[dict]:
     tasks.append(task_data)
     return tasks
 
-def store_task(task_text: str):
-    tasks = read_tasks(TODO_FILE)
+def store_task(task_text: str, file_path: str) -> list[dict]:
+    tasks = read_tasks(file_path)
     updated_tasks = create_task(tasks, task_text)
-    write_tasks(updated_tasks, TODO_FILE)
+    write_tasks(updated_tasks, file_path)
     print('task stored')
+    return updated_tasks
 
-def delete_task(task_id: int):
-    tasks = read_tasks(TODO_FILE)
+def delete_task(task_id: int, file_path: str) -> bool:
+    tasks = read_tasks(file_path)
     for task in tasks:
         if task['id'] == task_id:
             tasks.remove(task)
-            write_tasks(tasks, TODO_FILE)
+            write_tasks(tasks, file_path)
             print('task deleted')
-            return
+            return True
     print('no matching id')
+    return False
 
-def show_tasks():
-    tasks = read_tasks(TODO_FILE)
+def show_tasks(file_path: str):
+    tasks = read_tasks(file_path)
     for task in tasks:
          print(f"({task['id']}) {task['task']}")
 
@@ -91,12 +92,13 @@ def parse_arguments():
 
 if __name__ == '__main__':
     args = parse_arguments()
+    TODO_FILE = 'data/todo.json'
 
     if args.command == 'add':
-        store_task(args.task)
+        store_task(args.task, TODO_FILE)
     if args.command == 'delete':
-        delete_task(args.task_id)
+        delete_task(args.task_id, TODO_FILE)
     if args.command == 'list':
-        show_tasks()
+        show_tasks(TODO_FILE)
     
 

@@ -4,6 +4,8 @@ from todo import read_tasks
 from todo import generate_id
 from todo import create_task
 from todo import write_tasks
+from todo import delete_task
+from todo import store_task
 
 TODO_FILE = 'data/todo.json'
 
@@ -52,7 +54,6 @@ def test_read_tasks(tmp_path):
 
 def test_write_tasks(tmp_path):
     file = tmp_path / 'test.json'
-
     tasks = [
         {'id': 1, 'task': 'A', 'completed': False},
         {'id': 3, 'task': 'B', 'completed': True},
@@ -64,3 +65,34 @@ def test_write_tasks(tmp_path):
         content = json.load(f)
     
     assert content == tasks
+
+def test_delete_task(tmp_path):
+    file = tmp_path / 'test.json'
+    tasks = [
+        {'id': 1, 'task': 'A', 'completed': False},
+        {'id': 3, 'task': 'B', 'completed': True},
+        {'id': 5, 'task': 'C', 'completed': False}
+    ]
+    
+    with file.open('w') as f:
+        json.dump(tasks, f, indent=4)
+    
+    assert delete_task(3, file) is True
+
+
+def test_store_task(tmp_path):
+    file = tmp_path / 'test.json'
+    tasks = [
+        {'id': 1, 'task': 'A', 'completed': False},
+        {'id': 3, 'task': 'B', 'completed': True},
+        {'id': 5, 'task': 'C', 'completed': False}
+    ]
+    with file.open('w') as f:
+        json.dump(tasks, f, indent=4)
+    
+    updated_tasks = store_task('D', file)
+    assert len(updated_tasks) == 4
+    assert updated_tasks[3]['task'] == 'D'
+    
+    
+    
