@@ -18,8 +18,8 @@ completed_task.json
 
 TODO_FILE = 'data/todo.json'
 
-def read_tasks() -> list:  
-    with open(TODO_FILE, 'r') as file:
+def read_tasks(todo_file) -> list:  
+    with open(todo_file, 'r') as file:
         tasks = json.load(file)
   
         try:
@@ -27,8 +27,8 @@ def read_tasks() -> list:
         except json.JSONDecodeError:
             return []
 
-def write_tasks(tasks: list) -> list:
-    with open(TODO_FILE, 'w') as file:
+def write_tasks(tasks: list, todo_file):
+    with open(todo_file, 'w') as file:
         json.dump(tasks, file, indent=4)
 
 def generate_id(tasks: list) -> int:
@@ -42,7 +42,7 @@ def generate_id(tasks: list) -> int:
     return max_id + 1
         
 
-def create_task(tasks: list, task_text: str) -> list:
+def create_task(tasks: list, task_text: str) -> list[dict]:
     task_data = {
         'id': generate_id(tasks),
         'task': task_text,
@@ -52,23 +52,23 @@ def create_task(tasks: list, task_text: str) -> list:
     return tasks
 
 def store_task(task_text: str):
-    tasks = read_tasks()
+    tasks = read_tasks(TODO_FILE)
     updated_tasks = create_task(tasks, task_text)
-    write_tasks(updated_tasks)
+    write_tasks(updated_tasks, TODO_FILE)
     print('task stored')
 
 def delete_task(task_id: int):
-    tasks = read_tasks()
+    tasks = read_tasks(TODO_FILE)
     for task in tasks:
         if task['id'] == task_id:
             tasks.remove(task)
-            write_tasks(tasks)
+            write_tasks(tasks, TODO_FILE)
             print('task deleted')
             return
     print('no matching id')
 
 def show_tasks():
-    tasks = read_tasks()
+    tasks = read_tasks(TODO_FILE)
     for task in tasks:
          print(f"({task['id']}) {task['task']}")
 
