@@ -116,10 +116,11 @@ def test_clear_tasks(tmp_path):
     with file.open('w') as f:
         json.dump(tasks, f, indent=4)
     
-    todo.clear_tasks(file)
+    boolean = todo.clear_tasks(file)
     
     with open(file, 'r') as f:
         tasks = json.load(f)
     
+    assert boolean is True
     assert tasks == []
 

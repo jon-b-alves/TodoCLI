@@ -99,6 +99,9 @@ def parse_arguments():
     #list
     list_task_parser = subparsers.add_parser('list', help='list tasks')
 
+    #clear
+    clear_task_parser = subparsers.add_parser('clear', help='clear all tasks')
+    
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -111,5 +114,7 @@ if __name__ == '__main__':
         delete_task(args.task_id, TODO_FILE)
     if args.command == 'list':
         show_tasks(TODO_FILE)
+    if args.command == 'clear':
+        clear_tasks(TODO_FILE)
     
 
