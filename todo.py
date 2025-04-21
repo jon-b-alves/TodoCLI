@@ -73,6 +73,16 @@ def show_tasks(file_path: str):
     for task in tasks:
         print(f"({task['id']}) {task['task']}")
 
+def clear_tasks(file_path: str) -> bool:
+    try:
+        tasks = read_tasks(file_path)
+        tasks.clear()
+        write_tasks(tasks, file_path)
+        return True
+    except Exception:
+        return False
+
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser(prog='Todo List', description='CLI Todo List')
