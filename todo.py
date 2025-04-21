@@ -1,45 +1,41 @@
 import argparse
 import json
 
-'''
-main.py
-todo.json
-completed_task.json
-'''
-
-#todo add "task"
-#todo delete {ID#}
-#todo list
-#todo clear
-#todo help
-#todo complete
+# todo add "task"
+# todo delete {ID#}
+# todo list
+# todo clear
+# todo help
+# todo complete
 
 # read/load -> modify -> write/save
 
 
-def read_tasks(todo_file) -> list:  
+def read_tasks(todo_file) -> list:
     with open(todo_file, 'r') as file:
         tasks = json.load(file)
-  
+
         try:
             return tasks
         except json.JSONDecodeError:
             return []
 
+
 def write_tasks(tasks: list, todo_file):
     with open(todo_file, 'w') as file:
         json.dump(tasks, file, indent=4)
 
+
 def generate_id(tasks: list) -> int:
-    if tasks == None:
+    if tasks is None:
         return 1
-    
+
     max_id = 0
     for task in tasks:
         if task['id'] > max_id:
             max_id = task['id']
     return max_id + 1
-        
+
 
 def create_task(tasks: list, task_text: str) -> list:
     task_data = {
@@ -50,12 +46,14 @@ def create_task(tasks: list, task_text: str) -> list:
     tasks.append(task_data)
     return tasks
 
+
 def store_task(task_text: str, file_path: str) -> list[dict]:
     tasks = read_tasks(file_path)
     updated_tasks = create_task(tasks, task_text)
     write_tasks(updated_tasks, file_path)
-    print('task stored')
+    print('Task stored')
     return updated_tasks
+
 
 def delete_task(task_id: int, file_path: str) -> bool:
     tasks = read_tasks(file_path)
@@ -63,46 +61,54 @@ def delete_task(task_id: int, file_path: str) -> bool:
         if task['id'] == task_id:
             tasks.remove(task)
             write_tasks(tasks, file_path)
-            print('task deleted')
+            print('Task deleted')
             return True
-    print('no matching id')
+    print('No matching id')
     return False
+
 
 def show_tasks(file_path: str):
     tasks = read_tasks(file_path)
-    for task in tasks:
-        print(f"({task['id']}) {task['task']}")
+    if tasks:
+        for task in tasks:
+            print(f"({task['id']}) {task['task']}")
+    else:
+        print('No tasks available')
+
 
 def clear_tasks(file_path: str) -> bool:
     try:
         tasks = read_tasks(file_path)
         tasks.clear()
         write_tasks(tasks, file_path)
+        print('Tasks cleared')
         return True
     except Exception:
         return False
 
 
-
 def parse_arguments():
-    parser = argparse.ArgumentParser(prog='Todo List', description='CLI Todo List')
+    parser = argparse.ArgumentParser(
+        prog='Todo List',
+        description='CLI Todo List')
     subparsers = parser.add_subparsers(dest='command', help='commands')
 
-    #add
+    # add
     add_task_parser = subparsers.add_parser('add', help='add task')
     add_task_parser.add_argument('task', type=str, help='task itself')
 
-    #delete
+    # delete
     delete_task_parser = subparsers.add_parser('delete', help='delete task')
     delete_task_parser.add_argument('task_id', type=int, help='task id')
 
-    #list
-    list_task_parser = subparsers.add_parser('list', help='list tasks')
+    # list
+    subparsers.add_parser('list', help='list tasks')
 
-    #clear
-    clear_task_parser = subparsers.add_parser('clear', help='clear all tasks')
-    
+    # clear
+    subparsers.add_parser('clear', help='clear all tasks')
+
     return parser.parse_args()
+
 
 if __name__ == '__main__':
     args = parse_arguments()
@@ -116,5 +122,3 @@ if __name__ == '__main__':
         show_tasks(TODO_FILE)
     if args.command == 'clear':
         clear_tasks(TODO_FILE)
-    
-
