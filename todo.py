@@ -71,7 +71,8 @@ def delete_task(task_id: int, file_path: str) -> bool:
 def show_tasks(file_path: str):
     tasks = read_tasks(file_path)
     for task in tasks:
-         print(f"({task['id']}) {task['task']}")
+        print(f"({task['id']}) {task['task']}")
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser(prog='Todo List', description='CLI Todo List')
