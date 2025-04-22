@@ -130,3 +130,31 @@ def test_clear_tasks(tmp_path):
 
     assert boolean is True
     assert tasks == []
+
+
+def test_complete_task(tmp_path):
+    file = tmp_path / "test.json"
+    tasks = [
+        {"id": 1, "task": "A", "completed": False},
+        {"id": 3, "task": "B", "completed": True},
+        {"id": 5, "task": "C", "completed": False},
+    ]
+    with file.open("w") as f:
+        json.dump(tasks, f, indent=4)
+
+    boolean = todo.complete_task(5, file)
+    assert boolean is True
+
+
+def test_uncomplete_task(tmp_path):
+    file = tmp_path / "test.json"
+    tasks = [
+        {"id": 1, "task": "A", "completed": False},
+        {"id": 3, "task": "B", "completed": True},
+        {"id": 5, "task": "C", "completed": False},
+    ]
+    with file.open("w") as f:
+        json.dump(tasks, f, indent=4)
+
+    boolean = todo.uncomplete_task(3, file)
+    assert boolean is True

@@ -87,6 +87,30 @@ def clear_tasks(file_path: str) -> bool:
         return False
 
 
+def complete_task(task_id: int, file_path: str) -> bool:
+    tasks = read_tasks(file_path)
+    for task in tasks:
+        if task['id'] == task_id:
+            task['completed'] = True
+            write_tasks(tasks, file_path)
+            print('Task completed')
+            return True
+    print('No matching id')
+    return False
+
+
+def uncomplete_task(task_id: int, file_path: str) -> bool:
+    tasks = read_tasks(file_path)
+    for task in tasks:
+        if task['id'] == task_id:
+            task['completed'] = False
+            write_tasks(tasks, file_path)
+            print('Task uncompleted')
+            return True
+    print('No matching id')
+    return False
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(
         prog='Todo List',
@@ -98,14 +122,22 @@ def parse_arguments():
     add_task_parser.add_argument('task', type=str, help='task itself')
 
     # delete
-    delete_task_parser = subparsers.add_parser('delete', help='delete task')
+    delete_task_parser = subparsers.add_parser('delete', aliases=['del'], help='delete task')
     delete_task_parser.add_argument('task_id', type=int, help='task id')
 
     # list
-    subparsers.add_parser('list', help='list tasks')
+    subparsers.add_parser('list', aliases=['ls'], help='list tasks')
 
     # clear
-    subparsers.add_parser('clear', help='clear all tasks')
+    subparsers.add_parser('clear', aliases=['cl'], help='clear all tasks')
+
+    # complete
+    complete_task_parser = subparsers.add_parser('complete', aliases=['cmp'], help='mark task as complete')
+    complete_task_parser.add_argument('task_id', type=int, help='task id')
+
+    # uncomplete
+    uncomplete_task_parser = subparsers.add_parser('uncomplete', aliases=['uncmp'], help='mark task as uncomplete')
+    uncomplete_task_parser.add_argument('task_id', type=int, help='task id')
 
     return parser.parse_args()
 
@@ -114,11 +146,15 @@ if __name__ == '__main__':
     args = parse_arguments()
     TODO_FILE = 'data/todo.json'
 
-    if args.command == 'add':
+    if args.command in ['add']:
         store_task(args.task, TODO_FILE)
-    if args.command == 'delete':
+    if args.command in ['delete', 'del']:
         delete_task(args.task_id, TODO_FILE)
-    if args.command == 'list':
+    if args.command in ['list', 'ls']:
         show_tasks(TODO_FILE)
-    if args.command == 'clear':
+    if args.command in ['clear', 'cl']:
         clear_tasks(TODO_FILE)
+    if args.command in ['complete', 'cmp']:
+        complete_task(args.task_id, TODO_FILE)
+    if args.command in ['uncomplete', 'uncmp']:
+        uncomplete_task(args.task_id, TODO_FILE)
