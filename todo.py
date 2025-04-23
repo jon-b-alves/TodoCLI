@@ -62,10 +62,26 @@ def delete_task(task_id: int, file_path: str) -> bool:
 
 
 def show_tasks(file_path: str) -> None:
+    GREEN = "\033[32m"
+    RED = "\033[31m"
+    WHITE = "\033[97m"
+    RESET = "\033[0m"
+    CYAN = "\033[96m"
+
     tasks = read_tasks(file_path)
     if tasks:
         for task in tasks:
-            print(f"({task['id']}) {task['task']}")
+            task_id = f"{CYAN}({task['id']}){RESET}"
+            task_text = f"{WHITE}{task['task']}{RESET}"
+
+            if task["completed"]:
+                label = "[completed]".ljust(12)
+                status = f"{GREEN}{label}{RESET}"
+            else:
+                label = "[incomplete]".ljust(12)
+                status = f"{RED}{label}{RESET}"
+
+            print(f"{task_id} {status} {task_text}")
     else:
         print("No tasks available")
 
@@ -112,6 +128,22 @@ def uncomplete_task(task_id: int, file_path: str) -> bool:
     return False
 
 
+def display_commands():
+    """Displays a compact list of commands and their descriptions."""
+    commands = [
+        ("add <task_description>", "Adds a new task. The description must be wrapped in quotes."),
+        ("delete <task_id>", "Removes the task with the given ID from the list."),
+        ("complete <task_id>", "Marks the specified task as completed."),
+        ("uncomplete <task_id>", "Marks the specified task as not completed."),
+        ("list", "Displays all tasks with their IDs and completion status."),
+        ("clear", "Deletes all tasks from the list.")
+    ]
+
+    print("Command Reference:")
+    for cmd, desc in commands:
+        print(f"  {cmd.ljust(25)} {desc}")
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(
         prog="Todo List", description="CLI Todo List"
@@ -146,6 +178,9 @@ def parse_arguments():
     )
     uncomplete_task_parser.add_argument("task_id", type=int, help="task id")
 
+    # help
+    subparsers.add_parser("help", aliases=["h"], help="list commands")
+
     return parser.parse_args()
 
 
@@ -164,3 +199,5 @@ if __name__ == "__main__":
         complete_task(args.task_id, TODO_FILE)
     if args.command in ["uncomplete", "uncmp"]:
         uncomplete_task(args.task_id, TODO_FILE)
+    if args.command in ["help", "h"]:
+        display_commands()

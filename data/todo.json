@@ -1,12 +1,1 @@
-[
-    {
-        "id": 1,
-        "task": "red",
-        "completed": false
-    },
-    {
-        "id": 2,
-        "task": "blue",
-        "completed": false
-    }
-]
+[]
