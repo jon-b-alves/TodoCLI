@@ -1,6 +1,7 @@
-# TodoCLI
+# 💻TodoCLI
 A minimalist todo list that interfaces with your Windows' terminal. 
-![Logo](images/github_image.png)
+
+![Logo](github_image.png)
 
 ## Installation
 First clone the repository.
@@ -12,6 +13,12 @@ Secondly add the repository's path into your system's Path environment variable.
 - Open Environment Variables
 - Highlight Path and click "edit"
 - Click "new" and paste the repository's path
+
+## Usage
+Paste the following to get a list of commands and their functions.
+```
+todo help
+```
 
 
 
