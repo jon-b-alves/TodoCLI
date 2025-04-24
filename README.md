@@ -1,5 +1,6 @@
 # TodoCLI
 A minimalist todo list that interfaces with your Windows' terminal. 
+![Logo](images/github_image.png)
 
 ## Installation
 First clone the repository.
